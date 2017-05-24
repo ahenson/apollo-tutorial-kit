@@ -1,6 +1,7 @@
 import Mongoose from 'mongoose';
 import Sequelize from 'sequelize';
 import casual from 'casual';
+import rp from 'request-promise';
 import _ from 'lodash';
 
 const db = new Sequelize('blog', null, null, {
@@ -53,5 +54,14 @@ db.sync({force: true}).then(() => {
 const View = Mongoose.model('views', ViewSchema);
 const Author = db.models.author;
 const Post = db.models.post;
+const FortuneCookie = {
+  getOne() {
+    return rp('http://fortunecookieapi.herokuapp.com/v1/fortunes')
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        return res[0].message;
+      });
+  }
+};
 
-export {Author, Post, View};
+export {Author, Post, View, FortuneCookie};
